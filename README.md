@@ -61,3 +61,12 @@ constraint FKcfxqly70ddd02xbou0jxgh4o3
     foreign key (board_id) references board_table (id) on delete cascade
 );
 ```
+
+
+
+## mysql DataBase 계정 생성 및 권한 부여 
+```
+create database db_codingrecipe;
+create user user_codingrecipe@localhost identified by '1234';
+grant all privileges on db_codingrecipe.* to user_codingrecipe@localhost;
+```
