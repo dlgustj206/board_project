@@ -1,0 +1,12 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+</head>
+<body>
+    <button th:onclick="|location.href='@{/board/save}'|">글 작성</button>
+    <button th:onclick="|location.href='@{/board/}'|">글 목록</button>
+    <button th:onclick="|location.href='@{/board/paging}'|">페이징 목록</button>
+</body>
+</html>

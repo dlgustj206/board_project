@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>detail</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>id</th>
+        <td th:text="${board.id}"></td>
+    </tr>
+    <tr>
+        <th>title</th>
+        <td th:text="${board.boardTitle}"></td>
+    </tr>
+    <tr>
+        <th>writer</th>
+        <td th:text="${board.boardWriter}"></td>
+    </tr>
+    <tr>
+        <th>date</th>
+        <td th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    </tr>
+    <tr>
+        <th>hits</th>
+        <td th:text="${board.boardHits}"></td>
+    </tr>
+    <tr>
+        <th>contents</th>
+        <td th:text="${board.boardContents}"></td>
+    </tr>
+</table>
+    <button th:onclick="|location.href='@{/board/paging?page={page}(page=${page})}'|">목록</button>
+    <button th:onclick="|location.href='@{/board/update/{id}(id=${board.id})}'|">수정</button>
+    <button th:onclick="|location.href='@{/board/delete/{id}(id=${board.id})}'|">삭제</button>
+</body>
+</html>

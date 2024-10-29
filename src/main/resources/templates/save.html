@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>save</title>
+</head>
+<body>
+<form th:action="@{/board/save}" method="post">
+    <label for="writer">Writer:</label>
+    <input type="text" id="writer" name="boardWriter" th:value="${boardWriter}"> <br>
+
+    <label for="pass">Password:</label>
+    <input type="password" id="pass" name="boardPass"> <br>
+
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="boardTitle" th:value="${boardTitle}"> <br>
+
+    <label for="contents">Contents:</label>
+    <textarea id="contents" name="boardContents" cols="30" rows="10" th:text="${boardContents}"></textarea> <br>
+
+    <input type="submit" value="글 작성">
+</form>
+</body>
+</html>
