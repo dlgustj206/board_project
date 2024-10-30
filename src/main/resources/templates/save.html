@@ -5,7 +5,7 @@
     <title>save</title>
 </head>
 <body>
-<form th:action="@{/board/save}" method="post">
+<form th:action="@{/board/save}" method="post" enctype="multipart/form-data"> <!-- 이 속성이 지정되어야 실제 파일이 넘어감 -->
     <label for="writer">Writer:</label>
     <input type="text" id="writer" name="boardWriter" th:value="${boardWriter}"> <br>
 
@@ -17,6 +17,9 @@
 
     <label for="contents">Contents:</label>
     <textarea id="contents" name="boardContents" cols="30" rows="10" th:text="${boardContents}"></textarea> <br>
+
+    <label for="file">File:</label>
+    <input type="file" id="file" name="boardFile" th:value="${boardFile}"> <br>
 
     <input type="submit" value="글 작성">
 </form>
