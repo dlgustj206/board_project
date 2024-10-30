@@ -19,4 +19,7 @@ public class BoardFileEntity extends BaseEntity{
     @Column
     private String storedFileName;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private BoardEntity boardEntity;
 }
