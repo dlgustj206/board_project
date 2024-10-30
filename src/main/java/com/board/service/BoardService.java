@@ -35,6 +35,16 @@ public class BoardService {
             BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
             boardRepository.save(boardEntity); // DTO -> Entity
         } else {
+            /*
+                1. DTO에 담긴 파일을 꺼냄
+                2. 파일의 이름 가져옴
+                3. 서버 저장용 이름을 만듦(내사진.jpg -> 84593840598_내사진.jpg)
+                4. 저장 경로 설정
+                5. 해당 경로에 파일 저장
+                6. 게시글 정보는 board_table에 데이터 save 처리
+                7. 파일 정보는 board_file_table에 데이터 save 처리
+             */
+            MultipartFile boardFile = boardDTO.getBoardFile();
         }
     }
 
