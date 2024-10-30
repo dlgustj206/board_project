@@ -45,6 +45,8 @@ public class BoardService {
                 7. 파일 정보는 board_file_table에 데이터 save 처리
              */
             MultipartFile boardFile = boardDTO.getBoardFile();
+            String originalFilename = boardFile.getOriginalFilename();
+            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
         }
     }
 
