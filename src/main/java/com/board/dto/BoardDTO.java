@@ -22,6 +22,11 @@ public class BoardDTO {
     private LocalDateTime boardCreatedTime;
     private LocalDateTime boardUpdatedTime;
 
+    private MultipartFile boardFile; // save.html에서 첨부한 파일을 컨트롤러로 요청을 보낼 때 실제 파일을 담는 역할
+    private String originalFileName; // 원본 파일 이름
+    private String storedFileName; // 서버 저장용 파일 이름
+    private int fileAttached; // 파일 첨부 여부(첨부 1, 미첨부 0), boolean으로 해도 되지만 엔티티에서 손이 많이 가게 되므로 int형 사용
+
     public BoardDTO(Long id, String boardWriter, String boardTitle, Integer boardHits, LocalDateTime boardCreatedTime) {
         this.id = id;
         this.boardWriter = boardWriter;
