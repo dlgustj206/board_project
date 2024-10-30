@@ -52,6 +52,17 @@ public class BoardEntity extends BaseEntity {
         return boardEntity;
     }
 
+    public static BoardEntity toSaveFileEntity(BoardDTO boardDTO) { // 파일이 있는 경우에 호출
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
+        boardEntity.setBoardPass(boardDTO.getBoardPass());
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardHits(0);
+        boardEntity.setFileAttached(1); // 파일 있음
+        return boardEntity;
+    }
+
     public static BoardEntity toUpdateEntity(BoardDTO boardDTO) {
         BoardEntity boardEntity = new BoardEntity();
         boardEntity.setId(boardDTO.getId()); // id가 있어야만 업데이트 쿼리가 전달됨
