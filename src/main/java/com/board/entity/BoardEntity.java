@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // DB의 테이블 역할을 하는 클래스
 @Entity
 @Getter
@@ -33,6 +36,9 @@ public class BoardEntity extends BaseEntity {
 
     @Column
     private int fileAttached; // 파일 첨부 여부(첨부 1, 미첨부 0)
+
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<BoardFileEntity> fileEntityList = new ArrayList<>();
 
     public static BoardEntity toSaveEntity(BoardDTO boardDTO) { // 파일이 없는 경우에 호출
         // DTO에 담긴 값들을 Entity 객체로 옮겨 담음
