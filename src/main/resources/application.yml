@@ -1,8 +1,8 @@
-# ?? ?? ??
+# 서버 포트 설정
 server:
   port: 8082
 
-# database ?? ??
+# database 연동 설정
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -12,10 +12,10 @@ spring:
   thymeleaf:
     cache: false
 
-  # spring data jpa ??
+  # spring data jpa 설정
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
