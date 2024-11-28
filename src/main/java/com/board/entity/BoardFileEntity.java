@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "board_file_entity")
+@Table(name = "board_file_table")
 public class BoardFileEntity extends BaseEntity {
 
     @Id
