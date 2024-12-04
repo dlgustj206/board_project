@@ -54,7 +54,7 @@ public class BoardService {
             Long savedId = boardRepository.save(boardEntity).getId(); // 자식 테이블에서는 부모가 어떤 번호인지에 대한 정보가 필요하기 때문에 부모 게시글에 대한 pk 값이 필요함
             BoardEntity board = boardRepository.findById(savedId).get(); // 부모 엔티티가 전달되어야 하기 때문에 부모 엔티티를 DB로부터 가져옴
 
-            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName);
+            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName); // 부모 엔티티와 파일 정보를 사용해 BoardFileEntity 객체 생성
         }
     }
 
