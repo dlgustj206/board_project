@@ -57,7 +57,7 @@ public class BoardService {
             BoardEntity board = boardRepository.findById(savedId).get(); // 부모 엔티티가 전달되어야 하기 때문에 부모 엔티티를 DB로부터 가져옴
 
             BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName); // 부모 엔티티와 파일 정보를 사용해 BoardFileEntity 객체 생성
-            boardFileRepository.save(boardFileEntity);
+            boardFileRepository.save(boardFileEntity); // boardFileEntity 객체를 board_file_table에 저장
         }
     }
 
