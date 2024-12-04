@@ -30,6 +30,10 @@
         <th>contents</th>
         <td th:text="${board.boardContents}"></td>
     </tr>
+    <tr>
+        <th>image</th>
+        <td><img th:src="@{|/upload/${board.storedFileName}|}" alt=""></td>
+    </tr>
 </table>
     <button th:onclick="|location.href='@{/board/paging?page={page}(page=${page})}'|">목록</button>
     <button th:onclick="|location.href='@{/board/update/{id}(id=${board.id})}'|">수정</button>
