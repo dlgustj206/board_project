@@ -2,6 +2,7 @@ package com.board.service;
 
 import com.board.dto.BoardDTO;
 import com.board.entity.BoardEntity;
+import com.board.entity.BoardFileEntity;
 import com.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -52,6 +53,8 @@ public class BoardService {
             BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
             Long savedId = boardRepository.save(boardEntity).getId(); // 자식 테이블에서는 부모가 어떤 번호인지에 대한 정보가 필요하기 때문에 부모 게시글에 대한 pk 값이 필요함
             BoardEntity board = boardRepository.findById(savedId).get(); // 부모 엔티티가 전달되어야 하기 때문에 부모 엔티티를 DB로부터 가져옴
+
+            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName);
         }
     }
 
