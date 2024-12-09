@@ -61,6 +61,7 @@ public class BoardService {
         }
     }
 
+    @Transactional
     public List<BoardDTO> findAll() {
         List<BoardEntity> boardEntityList = boardRepository.findAll();
         List<BoardDTO> boardDTOList = new ArrayList<>(); // boardEntityList에 담긴 데이터를 여기로 옮겨담음(Entity -> DTO)
@@ -76,6 +77,7 @@ public class BoardService {
         boardRepository.updateHits(id);
     }
 
+    @Transactional
     public BoardDTO findById(Long id) {
         Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(id);
         if (optionalBoardEntity.isPresent()) {
