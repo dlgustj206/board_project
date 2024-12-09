@@ -46,6 +46,17 @@ public class BoardDTO {
         boardDTO.setBoardHits(boardEntity.getBoardHits());
         boardDTO.setBoardCreatedTime(boardEntity.getCreatedTime());
         boardDTO.setBoardUpdatedTime(boardEntity.getUpdatedTime());
+        if (boardEntity.getFileAttached() == 0) {
+            boardDTO.setFileAttached(boardEntity.getFileAttached()); // 0
+        } else {
+            boardDTO.setFileAttached(boardEntity.getFileAttached()); // 1
+            // 파일 이름을 가져가야 함
+            // originalFileName, storedFileName: board_file_table(BoardFileEntity)
+            // 부모 엔티티 객체가 자식 엔티티 객체에 접근할 수 있도록 함
+            boardDTO.setOriginalFileName(boardEntity.getBoardFileEntityList().get(0).getOriginalFileName());
+            boardDTO.setStoredFileName(boardEntity.getBoardFileEntityList().get(0).getStoredFileName());
+        }
+
         return boardDTO;
     }
 }
