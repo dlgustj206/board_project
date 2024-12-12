@@ -47,17 +47,18 @@ public class BoardService {
                 6. 게시글 정보는 board_table에 데이터 save 처리
                 7. 파일 정보는 board_file_table에 데이터 save 처리
              */
-            MultipartFile boardFile = boardDTO.getBoardFile();
-            String originalFilename = boardFile.getOriginalFilename();
-            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
-            String savePath = "C:/springboot_img/" + storedFileName; // C:/springboot_img/84593840598_내사진.jpg
-            boardFile.transferTo(new File(savePath));
             BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
             Long savedId = boardRepository.save(boardEntity).getId(); // 자식 테이블에서는 부모가 어떤 번호인지에 대한 정보가 필요하기 때문에 부모 게시글에 대한 pk 값이 필요함
             BoardEntity board = boardRepository.findById(savedId).get(); // 부모 엔티티가 전달되어야 하기 때문에 부모 엔티티를 DB로부터 가져옴
-
-            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName); // 부모 엔티티와 파일 정보를 사용해 BoardFileEntity 객체 생성
-            boardFileRepository.save(boardFileEntity); // boardFileEntity 객체를 board_file_table에 저장
+            for (MultipartFile boardFile : boardDTO.getBoardFile()) {
+//              MultipartFile boardFile = boardDTO.getBoardFile(); // 반복문을 이용하여 파일을 꺼내고 있기 때문에 필요 없음
+                String originalFilename = boardFile.getOriginalFilename();
+                String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
+                String savePath = "C:/springboot_img/" + storedFileName; // C:/springboot_img/84593840598_내사진.jpg
+                boardFile.transferTo(new File(savePath));
+                BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName); // 부모 엔티티와 파일 정보를 사용해 BoardFileEntity 객체 생성
+                boardFileRepository.save(boardFileEntity); // boardFileEntity 객체를 board_file_table에 저장
+            }
         }
     }
 
