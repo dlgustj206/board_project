@@ -19,7 +19,7 @@
     <textarea id="contents" name="boardContents" cols="30" rows="10" th:text="${boardContents}"></textarea> <br>
 
     <label for="file">File:</label>
-    <input type="file" id="file" name="boardFile" th:value="${boardFile}"> <br>
+    <input type="file" id="file" name="boardFile" th:value="${boardFile}" multiple> <br>
 
     <input type="submit" value="글 작성">
 </form>
