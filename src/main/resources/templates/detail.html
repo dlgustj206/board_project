@@ -42,5 +42,37 @@
     <button th:onclick="|location.href='@{/board/paging?page={page}(page=${page})}'|">목록</button>
     <button th:onclick="|location.href='@{/board/update/{id}(id=${board.id})}'|">수정</button>
     <button th:onclick="|location.href='@{/board/delete/{id}(id=${board.id})}'|">삭제</button>
+
+    <!-- 댓글 작성 부분 -->
+    <div id="comment-write">
+        <input type="text" id="commentWriter" placeholder="작성자">
+        <input type="text" id="commentContents" placeholder="내용">
+        <button id="comment-write-btn" onclick="commentWrite()">댓글작성</button>
+    </div>
+
 </body>
+<script th:inline="javascript">
+    const commentWrite = () => {
+        const writer = document.getElementById("commentWriter").value;
+        const contents = document.getElementById("commentContents").value;
+        console.log("작성자: ", writer);
+        console.log("내용: ", contents);
+        const id = [[${board.id}]];
+        $.ajax({
+            type: "post",           // 요청 방식
+            url: "/comment/save",   // 요청 주소
+            data: {                 //  요청 데이터: 작성자, 작성 내용, 게시글 번호
+                "commentWriter": writer,
+                "commentContents": contents,
+                "boardId": id
+            },
+            success: function (res) {
+                console.log("요청성공", res);
+            },
+            error: function (err) {
+                console.log("요청실패", err);
+            }
+        });
+    }
+</script>
 </html>
