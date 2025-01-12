@@ -1,7 +1,9 @@
 package com.board.contorller;
 
 import com.board.dto.BoardDTO;
+import com.board.dto.CommentDTO;
 import com.board.service.BoardService;
+import com.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.stream.events.Comment;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,6 +22,7 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService; // 생성자 주입 방식으로 의존성 주입
+    private final CommentService commentService;
 
     @GetMapping("/save")
     public String saveForm() {
@@ -50,6 +54,9 @@ public class BoardController {
                            @PageableDefault(page=1) Pageable pageable) { // 경로 상에 있는 값을 가져올 때는 @PathVariable 사용
         boardService.updateHits(id);
         BoardDTO boardDTO = boardService.findById(id);
+        // 댓글 목록 가져오기
+        List<CommentDTO> commentDTOList = commentService.findAll(id);
+        model.addAttribute("commentList", commentDTOList);
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", pageable.getPageNumber());
         return "detail";
