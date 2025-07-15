@@ -54,10 +54,10 @@ public class BoardService {
 //              MultipartFile boardFile = boardDTO.getBoardFile(); // 반복문을 이용하여 파일을 꺼내고 있기 때문에 필요 없음
                 String originalFilename = boardFile.getOriginalFilename();
                 String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
-                String savePath = "C:/springboot_img/" + storedFileName; // C:/springboot_img/84593840598_내사진.jpg
+                String savePath = "D:/board_img/" + storedFileName; // D:/board_img/84593840598_내사진.jpg
                 boardFile.transferTo(new File(savePath));
                 BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName); // 부모 엔티티와 파일 정보를 사용해 BoardFileEntity 객체 생성
-                boardFileRepository.save(boardFileEntity); // boardFileEntity 객체를 board_file_table에 저장
+                boardFileRepository.save(boardFileEntity); // boardFileEntity 객체를 board_filee에 저장
             }
         }
     }

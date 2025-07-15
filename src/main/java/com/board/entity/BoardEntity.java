@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "board_table")
+@Table(name = "board")
 public class BoardEntity extends BaseEntity {
 
     @Id // pk 컬럼 지정, 필수

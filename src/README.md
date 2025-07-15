@@ -1,8 +1,8 @@
 # 개발환경
 1. IDE: IntelliJ IDEA Community
-2. Spring Boot 2.6.13
-3. JDK 11
-4. mysql
+2. Spring Boot 3.5.3
+3. JDK 21
+4. MySQL
 5. Spring Data JPA
 6. Thymeleaf
 
@@ -32,40 +32,30 @@
         - BoardEntity
         - BoardFileEntity, BoardFileRepository 추가
         - detail.html
-    - github에 올려놓은 코드를 보시고 어떤 부분이 바뀌는지 잘 살펴봐주세요.
 
-    - board_table(부모) - board_file_table(자식)
+    - board(부모) - board_file(자식)
 
 ```
-create table board_table
-(
-id             bigint auto_increment primary key,
-created_time   datetime     null,
-updated_time   datetime     null,
-board_contents varchar(500) null,
-board_hits     int          null,
-board_pass     varchar(255) null,
-board_title    varchar(255) null,
-board_writer   varchar(20)  not null,
-file_attached  int          null
+create table board (
+   id             bigint auto_increment primary key,
+   created_time   datetime     null,
+   updated_time   datetime     null,
+   board_contents varchar(500) null,
+   board_hits     int          null,
+   board_pass     varchar(255) null,
+   board_title    varchar(255) null,
+   board_writer   varchar(20)  not null,
+   file_attached  int          null
 );
 
-create table board_file_table
-(
-id                 bigint auto_increment primary key,
-created_time       datetime     null,
-updated_time       datetime     null,
-original_file_name varchar(255) null,
-stored_file_name   varchar(255) null,
-board_id           bigint       null,
-constraint FKcfxqly70ddd02xbou0jxgh4o3
-    foreign key (board_id) references board_table (id) on delete cascade
+create table board_file (
+   id                 bigint auto_increment primary key,
+   created_time       datetime     null,
+   updated_time       datetime     null,
+   original_file_name varchar(255) null,
+   stored_file_name   varchar(255) null,
+   board_id           bigint       null,
+   constraint FKcfxqly70ddd02xbou0jxgh4o3
+   foreign key (board_id) references board (id) on delete cascade
 );
-```
-
-## mysql DataBase 계정 생성 및 권한 부여
-```
-create database db_codingrecipe;
-create user user_codingrecipe@localhost identified by '1234';
-grant all privileges on db_codingrecipe.* to user_codingrecipe@localhost;
 ```
