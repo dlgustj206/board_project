@@ -1,72 +1,143 @@
-# 개발환경
-1. IDE: IntelliJ IDEA Community
-2. Spring Boot 3.3.4
-3. JDK 17
-4. mysql 8.0.37
-5. Spring Data JPA
-6. Thymeleaf
+# 📝 게시판 프로젝트
 
-# 게시판 주요기능 
-1. 글쓰기(/board/save)
-2. 글목록(/board/)
-3. 글조회(/board/{id})
-4. 글수정(/board/update/{id})
-    - 상세화면에서 수정 버튼 클릭 
-    - 서버에서 해당 게시글의 정보를 가지고 수정 화면 출력 
-    - 제목, 내용 수정 입력 받아서 서버로 요청 
-    - 수정 처리 
-5. 글삭제(/board/delete/{id})
-6. 페이징처리(/board/paging)
-    - /board/paging?page=2
-    - /board/paging/2
-    - 게시글 14
-      - 한페이지에 5개씩 => 3개
-      - 한페이지에 3개씩 => 5개
-7. 파일(이미지)첨부하기 
-   - 단일 파일 첨부
-   - 다중 파일 첨부
-   - 파일 첨부와 관련하여 추가될 부분들  
-     - save.html  
-     - BoardDTO  
-     - BoardService.save()  
-     - BoardEntity
-     - BoardFileEntity, BoardFileRepository 추가
-     - detail.html
-   - github에 올려놓은 코드를 보시고 어떤 부분이 바뀌는지 잘 살펴봐주세요. 
+## ⚙️ 개발 환경
 
-    - board_table(부모) - board_file_table(자식)
+| 항목           | 버전 및 정보                  |
+|----------------|-------------------------------|
+| 💻 IDE         | IntelliJ IDEA Community       |
+| ☕ JDK         | JDK 21                        |
+| ⚡ Framework   | Spring Boot 3.5.3             |
+| 🗄️ DB         | MySQL 8.0.42                   |
+| 🔗 ORM         | Spring Data JPA               |
+| 🎨 Template   | Thymeleaf                     |
+
+---
+
+## 🚀 주요 기능
+
+1.  **글 작성**
+    - `URL`: `/board/save`
+    - 단일/다중 파일(이미지) 첨부 가능
+
+2. 📋 **글 목록 조회**
+    - `URL`: `/board/`
+
+3.  **글 상세 조회**
+    - `URL`: `/board/{id}`
+
+4.  **글 수정**
+    - `URL`: `/board/update/{id}`
+    - 상세 화면에서 수정 버튼 클릭 → 수정 화면 출력 → 제목/내용 수정 후 요청 → 처리
+
+5.  **글 삭제**
+    - `URL`: `/board/delete/{id}`
+
+6.  **페이징 처리**
+    - 예시: `/board/paging?page=2` 또는 `/board/paging/2`
+    - 한 페이지당 5개 게시글 표시
+    - (예: 총 14개 → 총 3페이지)
+
+7.  **파일(이미지) 첨부**
+    - 단일 파일 첨부
+    - 다중 파일 첨부
+
+---
+
+## 📂 프로젝트 폴더 구조
+
+```plaintext
+📦 src
+ ┗━ 📂 main
+     ┣━ 📂 java/com/board
+     ┃   ┣━ 📂 config
+     ┃   ┃   ┗━ WebConfig.java
+     ┃   ┣━ 📂 controller
+     ┃   ┃   ┣━ BoardController.java
+     ┃   ┃   ┣━ CommentController.java
+     ┃   ┃   ┗━ HomeController.java
+     ┃   ┣━ 📂 dto
+     ┃   ┃   ┣━ BoardDTO.java
+     ┃   ┃   ┣━ BoardFileDTO.java
+     ┃   ┃   ┗━ CommentDTO.java
+     ┃   ┣━ 📂 entity
+     ┃   ┃   ┣━ BaseEntity.java
+     ┃   ┃   ┣━ BoardEntity.java
+     ┃   ┃   ┣━ BoardFileEntity.java
+     ┃   ┃   ┗━ CommentEntity.java
+     ┃   ┣━ 📂 repository
+     ┃   ┃   ┣━ BoardRepository.java
+     ┃   ┃   ┣━ BoardFileRepository.java
+     ┃   ┃   ┗━ CommentRepository.java
+     ┃   ┣━ 📂 service
+     ┃   ┃   ┣━ BoardService.java
+     ┃   ┃   ┗━ CommentService.java
+     ┃   ┗━ BoardApplication.java
+     ┃
+     ┗━ 📂 resources
+         ┣━ 📂 templates
+         ┃   ┣━ detail.html
+         ┃   ┣━ index.html
+         ┃   ┣━ list.html
+         ┃   ┣━ paging.html
+         ┃   ┣━ save.html
+         ┃   ┗━ update.html
+         ┣━ application.yml
+         ┗━ .env
 ```
-create table board_table
+
+---
+
+## 📑 .env 파일 예시
+
+```env
+DB_URL=jdbc:mysql://localhost:3306/board_db
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
+
+---
+
+## 🗄️ 데이터베이스 테이블 스키마
+
+```sql
+-- 게시판 테이블
+CREATE TABLE board
 (
-id             bigint auto_increment primary key,
-created_time   datetime     null,
-updated_time   datetime     null,
-board_contents varchar(500) null,
-board_hits     int          null,
-board_pass     varchar(255) null,
-board_title    varchar(255) null,
-board_writer   varchar(20)  not null,
-file_attached  int          null
+    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    created_time   DATETIME NULL,
+    updated_time   DATETIME NULL,
+    board_contents VARCHAR(500) NULL,
+    board_hits     INT NULL,
+    board_pass     VARCHAR(255) NULL,
+    board_title    VARCHAR(255) NULL,
+    board_writer   VARCHAR(20) NOT NULL,
+    file_attached  INT NULL
 );
 
-create table board_file_table
+-- 첨부파일 테이블
+CREATE TABLE board_file
 (
-id                 bigint auto_increment primary key,
-created_time       datetime     null,
-updated_time       datetime     null,
-original_file_name varchar(255) null,
-stored_file_name   varchar(255) null,
-board_id           bigint       null,
-constraint FKcfxqly70ddd02xbou0jxgh4o3
-    foreign key (board_id) references board_table (id) on delete cascade
+    id                 BIGINT AUTO_INCREMENT PRIMARY KEY,
+    original_file_name VARCHAR(255) NULL,
+    stored_file_name   VARCHAR(255) NULL,
+    board_id           BIGINT NULL,
+    created_time       DATETIME NULL,
+    updated_time       DATETIME NULL,
+    CONSTRAINT fk_board_file
+        FOREIGN KEY (board_id) REFERENCES board(id)
+        ON DELETE CASCADE
 );
-```
 
-
-
-## mysql DataBase 계정 생성 및 권한 부여 
-```
-create database db_codingrecipe;
-create user user_codingrecipe@localhost identified by '1234';
-grant all privileges on db_codingrecipe.* to user_codingrecipe@localhost;
-```
+-- 댓글 테이블
+CREATE TABLE comment
+(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    comment_writer VARCHAR(20) NOT NULL,
+    comment_contents TEXT,
+    board_id BIGINT,
+    created_time DATETIME,
+    updated_time DATETIME,
+    CONSTRAINT fk_board
+        FOREIGN KEY (board_id) REFERENCES board(id)
+        ON DELETE CASCADE
+);
