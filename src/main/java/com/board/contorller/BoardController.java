@@ -98,7 +98,7 @@ public class BoardController {
     public String paging(@PageableDefault(page=1) Pageable pageable, Model model) {
 //      pageable.getPageNumber();
         Page<BoardDTO> boardList = boardService.paging(pageable);
-        int blockLimit = 3; // 보여지는 페이지 개수를 3개로 제한
+        int blockLimit = 5; // 보여지는 페이지 개수를 5개로 제한
         int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
         int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
 

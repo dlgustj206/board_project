@@ -100,9 +100,10 @@ public class BoardService {
 
     public Page<BoardDTO> paging(Pageable pageable) {
         int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작하기 때문에 1을 빼줌
-        int pageLimit = 3; // 한 페이지에 보여줄 글의 개수
-        // 한 페이지당 3개씩 글을 보여주고, 정렬 기준은 id 기준으로 내림차순 정렬
-        Page<BoardEntity> boardEntities = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+        int pageLimit = 5; // 한 페이지에 보여줄 글의 개수
+        // 한 페이지당 5개씩 글을 보여주고, 정렬 기준은 id 기준으로 내림차순 정렬
+        Page<BoardEntity> boardEntities = boardRepository.findAllWithFile(
+                PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
 
         System.out.println("boardEntities.getContent() = " + boardEntities.getContent()); // 요청 페이지에 해당하는 글
         System.out.println("boardEntities.getTotalElements() = " + boardEntities.getTotalElements()); // 전체 글 개수
@@ -114,8 +115,7 @@ public class BoardService {
         System.out.println("boardEntities.isLast() = " + boardEntities.isLast()); // 마지막 페이지 여부
 
         // 목록: id, writer, title, hits, createdTime
-        Page<BoardDTO> boardDTOS = boardEntities.map(board ->
-                new BoardDTO(board.getId(), board.getBoardWriter(), board.getBoardTitle(), board.getBoardHits(), board.getCreatedTime()));
+        Page<BoardDTO> boardDTOS = boardEntities.map(BoardDTO::toBoardDTO);
         return boardDTOS;
     }
 }
