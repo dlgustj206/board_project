@@ -1,12 +1,67 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>index</title>
+    <title>메인 홈</title>
+    <style>
+        body {
+            font-family: '맑은 고딕', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 60px 80px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .link-btn {
+            display: inline-block;
+            min-width: 200px;
+            padding: 14px 30px;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.3s, box-shadow 0.2s;
+            font-size: 18px;
+            box-shadow: 0 2px 6px rgba(0,123,255,0.4);
+        }
+
+        .link-btn:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.4);
+        }
+    </style>
 </head>
 <body>
-    <button th:onclick="|location.href='@{/board/save}'|">글 작성</button>
-    <button th:onclick="|location.href='@{/board/}'|">글 목록</button>
-    <button th:onclick="|location.href='@{/board/paging}'|">페이징 목록</button>
+<div class="container">
+    <h1>📌 게시판 메인</h1>
+    <div class="btn-group">
+        <a href="/board/save" class="link-btn">글쓰기</a>
+        <a href="/board/" class="link-btn">글 목록 보기</a>
+        <a href="/board/paging" class="link-btn">페이징 목록 보기</a>
+    </div>
+</div>
 </body>
 </html>

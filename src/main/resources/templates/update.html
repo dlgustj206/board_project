@@ -2,18 +2,223 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>update</title>
+    <title>게시글 수정</title>
+    <style>
+        body {
+            font-family: '맑은 고딕', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: #fff;
+            padding: 40px 60px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+            justify-content: flex-start;
+            margin: 50px auto;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #222;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 100%;
+            height: 10px;
+            background: #cce5ff;
+            z-index: -1;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .row .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+        }
+
+        input[type="text"],
+        textarea,
+        input[type="file"] {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        input[readonly] {
+            background: #f1f1f1;
+        }
+
+        textarea {
+            resize: vertical;
+            font-family: '맑은 고딕', sans-serif;
+        }
+
+        .file-list {
+            margin: 0;
+            padding: 0;
+        }
+
+        .file-list li {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+        }
+
+        .file-list li::before {
+            content: "📁";
+            font-size: 14px;
+        }
+
+        .file-list a {
+            flex-grow: 1;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .file-list a:hover {
+            text-decoration: underline;
+        }
+
+        .file-list button {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .file-list button:hover {
+            background: #b02a37;
+        }
+
+        .btn-box {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-box button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(0,123,255,0.4);
+            transition: background-color 0.3s, box-shadow 0.2s;
+        }
+
+        .btn-box button:hover {
+            background: #0056b3;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.4);
+        }
+    </style>
 </head>
 <body>
-<form action="/board/update" method="post" name="updateForm">
-    <input type="hidden" name="id" th:value="${boardUpdate.id}">
-    writer: <input type="text" name="boardWriter" th:value="${boardUpdate.boardWriter}" readonly> <br>
-    pass: <input type="text" name="boardPass" id="boardPass"> <br>
-    title: <input type="text" name="boardTitle" th:value="${boardUpdate.boardTitle}"> <br>
-    contents: <textarea name="boardContents" cols="30" rows="10" th:text="${boardUpdate.boardContents}"></textarea> <br>
-    <input type="hidden" name="boardHits" th:value="${boardUpdate.boardHits}">
-    <input type="button" value="글 수정" onclick="boardUpdate()">
-</form>
+<div class="container">
+    <h2>✏️ 게시글 수정</h2>
+    <form action="/board/update" method="post" name="updateForm" enctype="multipart/form-data">
+        <input type="hidden" name="id" th:value="${boardUpdate.id}">
+
+        <div class="row">
+            <div class="form-group">
+                <label>작성자</label>
+                <input type="text" name="boardWriter" th:value="${boardUpdate.boardWriter}" readonly>
+            </div>
+            <div class="form-group">
+                <label>비밀번호</label>
+                <input type="text" name="boardPass" id="boardPass" placeholder="비밀번호 입력">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>제목</label>
+            <input type="text" name="boardTitle" th:value="${boardUpdate.boardTitle}">
+        </div>
+
+        <div class="form-group">
+            <label>내용</label>
+            <textarea name="boardContents" cols="30" rows="5" th:text="${boardUpdate.boardContents}"></textarea>
+        </div>
+
+        <!-- 기존 첨부파일 -->
+        <div class="form-group">
+            <label>📎 첨부파일</label>
+            <ul class="file-list">
+                <li th:each="file : ${boardUpdate.fileList}">
+                    <a th:href="@{|/board/file/${file.id}|}" th:text="${file.originalFileName}" target="_blank"></a>
+                    <button type="button" th:onclick="'deleteFile(' + ${file.id} + ')'">삭제</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 새 첨부파일 -->
+        <div class="form-group">
+            <label>첨부파일 추가</label>
+            <input type="file" name="boardFile" multiple>
+        </div>
+
+        <input type="hidden" name="boardHits" th:value="${boardUpdate.boardHits}">
+
+        <div class="btn-box">
+            <button type="button" onclick="boardUpdate()">글 수정</button>
+        </div>
+    </form>
+</div>
+
 <script th:inline="javascript">
     const boardUpdate = () => {
         const pass = [[${boardUpdate.boardPass}]];
@@ -23,6 +228,13 @@
         } else {
             alert("비밀번호가 일치하지 않습니다!");
         }
+    };
+
+    function deleteFile(fileId) {
+        if (confirm('정말 삭제하시겠습니까?')) {
+            location.href = '/board/file/delete/' + fileId;
+        }
     }
 </script>
 </body>
+</html>

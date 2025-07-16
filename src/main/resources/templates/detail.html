@@ -2,95 +2,310 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>detail</title>
-    <!-- jquery cdn -->
-    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <title>게시글 상세보기</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: '맑은 고딕', sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: #fff;
+            padding: 40px 60px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+            justify-content: flex-start;
+            margin: 50px auto;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .info-block {
+            flex: 0 0 48%;
+            border-collapse: collapse;
+        }
+
+        .info-block th {
+            background: #e9f2fb;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            width: 30%;
+            font-size: 14px;
+        }
+
+        .info-block td {
+            padding: 12px 20px;
+            width: 70%;
+            font-size: 14px;
+        }
+
+        .info-row table:first-child tr:first-child th,
+        .info-row table:first-child tr:first-child td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .info-row table:last-child tr:nth-child(2) th,
+        .info-row table:last-child tr:nth-child(2) td {
+            border-top: 1px solid #ddd;
+        }
+
+        .board-contents {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 20px;
+            background: #fafafa;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            margin-bottom: 0px;
+            min-height: 100px;
+            font-size: 14px;
+        }
+
+        .btn-box {
+            text-align: right;
+        }
+
+        .btn-box button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            margin-left: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .btn-box button:hover {
+            background: #0056b3;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .comment-header .emoji {
+            font-size: 24px;
+        }
+
+        .comment-header .title {
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .comment-header input[type="text"] {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #commentWriter {
+            width: 180px;
+            font-size: 14px;
+        }
+
+        #commentContents {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .comment-header button {
+            padding: 8px 16px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            flex-shrink: 0;
+            width: 125px;
+            font-size: 14px;
+        }
+
+        .comment-header button:hover {
+            background: #218838;
+        }
+
+        .comment-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .comment-table th,
+        .comment-table td {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .comment-table th {
+            background: #e9f2fb;
+        }
+
+        .file-box {
+            margin-top: 5px;
+        }
+
+        .file-box h4 {
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .file-item:hover {
+            background: #e9ecef;
+        }
+
+        .file-icon {
+            margin-right: 10px;
+        }
+
+        .file-item a {
+            color: #007bff;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .file-item a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<table>
-    <tr>
-        <th>id</th>
-        <td th:text="${board.id}"></td>
-    </tr>
-    <tr>
-        <th>title</th>
-        <td th:text="${board.boardTitle}"></td>
-    </tr>
-    <tr>
-        <th>writer</th>
-        <td th:text="${board.boardWriter}"></td>
-    </tr>
-    <tr>
-        <th>date</th>
-        <td th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
-    </tr>
-    <tr>
-        <th>hits</th>
-        <td th:text="${board.boardHits}"></td>
-    </tr>
-    <tr>
-        <th>contents</th>
-        <td th:text="${board.boardContents}"></td>
-    </tr>
-    <tr th:if="${board.fileAttached == 1}">
-        <th>image</th>
-        <td th:each="fileName : ${board.storedFileName}">
-            <img th:src="@{|/upload/${fileName}|}" alt="">
-        </td>
-    </tr>
-</table>
-    <button th:onclick="|location.href='@{/board/paging?page={page}(page=${page})}'|">목록</button>
-    <button th:onclick="|location.href='@{/board/update/{id}(id=${board.id})}'|">수정</button>
-    <button th:onclick="|location.href='@{/board/delete/{id}(id=${board.id})}'|">삭제</button>
+<div class="container">
+    <h2>📄 게시글 상세보기</h2>
 
-    <!-- 댓글 작성 부분 -->
-    <div id="comment-write">
-        <input type="text" id="commentWriter" placeholder="작성자">
-        <input type="text" id="commentContents" placeholder="내용">
-        <button id="comment-write-btn" onclick="commentWrite()">댓글작성</button>
-    </div>
-
-    <!-- 댓글 출력 부분 -->
-    <div id="comment-list">
-        <table>
+    <!-- 2x2 게시글 정보 -->
+    <div class="info-row">
+        <table class="info-block">
             <tr>
-                <th>댓글번호</th>
-                <th>작성자</th>
-                <th>내용</th>
-                <th>작성시간</th>
+                <th>제목</th>
+                <td th:text="${board.boardTitle}"></td>
             </tr>
-            <tr th:each="comment: ${commentList}">
-                <td th:text="${comment.id}"></td>
-                <td th:text="${comment.commentWriter}"></td>
-                <td th:text="${comment.commentContents}"></td>
-                <td th:text="${comment.commentCreatedTime}"></td>
+            <tr>
+                <th>작성자</th>
+                <td th:text="${board.boardWriter}"></td>
+            </tr>
+        </table>
+        <table class="info-block">
+            <tr>
+                <th>조회수</th>
+                <td th:text="${board.boardHits}"></td>
+            </tr>
+            <tr>
+                <th>작성일</th>
+                <td th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
         </table>
     </div>
 
-</body>
+    <!-- 게시글 내용 -->
+    <div class="board-contents" th:text="${board.boardContents}"></div>
+
+    <!-- 첨부파일 영역 -->
+    <div class="file-box" th:if="${board.fileAttached == 1}">
+        <h4>📎 첨부파일</h4>
+        <div class="file-list">
+            <div class="file-item" th:each="file : ${board.fileList}">
+                <span class="file-icon">🗂️</span>
+                <a th:href="@{'/board/download?fileId=' + ${file.id}}"
+                   th:text="${file.originalFileName}"></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 버튼 -->
+    <div class="btn-box">
+        <button th:onclick="|location.href='@{/board/paging}'|">목록</button>
+        <button th:onclick="|location.href='@{/board/update/{id}(id=${board.id})}'|">수정</button>
+        <button th:onclick="|location.href='@{/board/delete/{id}(id=${board.id})}'|">삭제</button>
+    </div>
+
+    <!-- 댓글 영역 -->
+    <div class="comment-header">
+        <span class="emoji">💬</span>
+        <span class="title">댓글</span>
+        <input type="text" id="commentWriter" placeholder="작성자">
+        <input type="text" id="commentContents" placeholder="내용">
+        <button type="button" onclick="commentWrite()">댓글 작성</button>
+    </div>
+
+    <table class="comment-table">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>작성자</th>
+            <th>내용</th>
+            <th>작성일</th>
+        </tr>
+        </thead>
+        <tbody id="comment-list">
+        <tr th:each="comment : ${commentList}">
+            <td th:text="${comment.id}"></td>
+            <td th:text="${comment.commentWriter}"></td>
+            <td th:text="${comment.commentContents}"></td>
+            <td th:text="${#temporals.format(comment.commentCreatedTime, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 <script th:inline="javascript">
     const commentWrite = () => {
         const writer = document.getElementById("commentWriter").value;
         const contents = document.getElementById("commentContents").value;
-        console.log("작성자: ", writer);
-        console.log("내용: ", contents);
         const id = [[${board.id}]];
         $.ajax({
-            type: "post",           // 요청 방식
-            url: "/comment/save",   // 요청 주소
-            data: {                 //  요청 데이터: 작성자, 작성 내용, 게시글 번호
+            type: "post",
+            url: "/comment/save",
+            data: {
                 "commentWriter": writer,
                 "commentContents": contents,
                 "boardId": id
             },
             success: function (res) {
-                console.log("요청 성공", res);
-                let output = "<table>";
-                output += "<tr><th>댓글번호</th>";
-                output += "<th>작성자</th>";
-                output += "<th>내용</th>";
-                output += "<th>작성시간</th></tr>";
+                let output = "";
                 for (let i in res) {
                     output += "<tr>";
                     output += "<td>" + res[i].id + "</td>";
@@ -99,7 +314,6 @@
                     output += "<td>" + res[i].commentCreatedTime + "</td>";
                     output += "</tr>";
                 }
-                output += "</table>";
                 document.getElementById('comment-list').innerHTML = output;
                 document.getElementById('commentWriter').value = '';
                 document.getElementById('commentContents').value = '';
@@ -110,4 +324,5 @@
         });
     }
 </script>
+</body>
 </html>
