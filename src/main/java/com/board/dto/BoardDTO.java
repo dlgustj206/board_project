@@ -30,6 +30,8 @@ public class BoardDTO {
     private List<String> storedFileName; // 서버 저장용 파일 이름
     private int fileAttached; // 파일 첨부 여부(첨부 1, 미첨부 0), boolean으로 해도 되지만 엔티티에서 손이 많이 가게 되므로 int형 사용
 
+    private List<BoardFileDTO> fileList;
+
     public BoardDTO(Long id, String boardWriter, String boardTitle, Integer boardHits, LocalDateTime boardCreatedTime) {
         this.id = id;
         this.boardWriter = boardWriter;
@@ -50,17 +52,14 @@ public class BoardDTO {
         boardDTO.setBoardCreatedTime(boardEntity.getCreatedTime());
         boardDTO.setBoardUpdatedTime(boardEntity.getUpdatedTime());
         if (boardEntity.getFileAttached() == 0) {
-            boardDTO.setFileAttached(boardEntity.getFileAttached()); // 0
+            boardDTO.setFileAttached(0);
         } else {
-            List<String> originalFileNameList = new ArrayList<>();
-            List<String> storedFileNameList = new ArrayList<>();
-            boardDTO.setFileAttached(boardEntity.getFileAttached()); // 1
+            boardDTO.setFileAttached(1);
+            List<BoardFileDTO> boardFileDTOList = new ArrayList<>();
             for (BoardFileEntity boardFileEntity : boardEntity.getBoardFileEntityList()) {
-                originalFileNameList.add(boardFileEntity.getOriginalFileName()); // 엔티티에 있는 originalFileName을 하나씩 꺼내서 originalFileList에 담음
-                storedFileNameList.add(boardFileEntity.getStoredFileName());
+                boardFileDTOList.add(BoardFileDTO.toBoardFileDTO(boardFileEntity));
             }
-            boardDTO.setOriginalFileName(originalFileNameList);
-            boardDTO.setStoredFileName(storedFileNameList);
+            boardDTO.setFileList(boardFileDTOList);
         }
 
         return boardDTO;

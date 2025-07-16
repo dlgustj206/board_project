@@ -2,6 +2,8 @@ package com.board.contorller;
 
 import com.board.dto.BoardDTO;
 import com.board.dto.CommentDTO;
+import com.board.entity.BoardFileEntity;
+import com.board.repository.BoardFileRepository;
 import com.board.service.BoardService;
 import com.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +13,16 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
-import javax.xml.stream.events.Comment;
+import java.io.FileNotFoundException;
+import java.net.URLEncoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,6 +33,7 @@ public class BoardController {
 
     private final BoardService boardService; // 생성자 주입 방식으로 의존성 주입
     private final CommentService commentService;
+    private final BoardFileRepository boardFileRepository;
 
     @GetMapping("/save")
     public String saveForm() {
@@ -96,4 +107,32 @@ public class BoardController {
         model.addAttribute("endPage", endPage);
         return "paging";
     }
+
+    @GetMapping("/download")
+    public ResponseEntity<Resource> downloadFile(@RequestParam Long fileId) throws Exception {
+        // BoardFileEntity를 DB에서 조회
+        BoardFileEntity boardFileEntity = boardFileRepository.findById(fileId)
+                .orElseThrow(() -> new FileNotFoundException("파일 정보를 찾을 수 없습니다."));
+
+        String storedFileName = boardFileEntity.getStoredFileName();
+        String originalFileName = boardFileEntity.getOriginalFileName();
+
+        // 로컬 저장 경로와 결합
+        String uploadPath = "D:/board_img/";
+        Path path = Paths.get(uploadPath + storedFileName);
+        Resource resource = new UrlResource(path.toUri());
+
+        if (!resource.exists()) {
+            throw new FileNotFoundException("저장 경로에 파일이 없습니다.");
+        }
+
+        // 한글, 공백 깨짐 방지
+        String encodedFileName = URLEncoder.encode(originalFileName, StandardCharsets.UTF_8)
+                .replaceAll("\\+", "%20");
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + encodedFileName + "\"")
+                .body(resource);
+        }
 }
