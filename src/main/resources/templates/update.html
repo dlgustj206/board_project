@@ -79,6 +79,7 @@
         }
 
         input[type="text"],
+        input[type="password"],
         textarea,
         input[type="file"] {
             padding: 10px;
@@ -165,6 +166,44 @@
             background: #0056b3;
             box-shadow: 0 4px 10px rgba(0,123,255,0.4);
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .modal-content button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -180,7 +219,7 @@
             </div>
             <div class="form-group">
                 <label>비밀번호</label>
-                <input type="text" name="boardPass" id="boardPass" placeholder="비밀번호 입력">
+                <input type="password" name="boardPass" id="boardPass" placeholder="비밀번호 입력">
             </div>
         </div>
 
@@ -219,6 +258,13 @@
     </form>
 </div>
 
+<div id="alertModal" class="modal">
+    <div class="modal-content">
+        <p id="alertText"></p>
+        <button onclick="closeModal()">확인</button>
+    </div>
+</div>
+
 <script th:inline="javascript">
     const boardUpdate = () => {
         const pass = [[${boardUpdate.boardPass}]];
@@ -226,7 +272,7 @@
         if (pass == inputPass) {
             document.updateForm.submit();
         } else {
-            alert("비밀번호가 일치하지 않습니다!");
+            showModal("비밀번호가 일치하지 않습니다!");
         }
     };
 
@@ -234,6 +280,15 @@
         if (confirm('정말 삭제하시겠습니까?')) {
             location.href = '/board/file/delete/' + fileId;
         }
+    }
+
+    function showModal(message) {
+        document.getElementById("alertText").innerText = message;
+        document.getElementById("alertModal").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("alertModal").style.display = "none";
     }
 </script>
 </body>
