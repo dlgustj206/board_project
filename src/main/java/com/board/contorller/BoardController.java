@@ -17,6 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.View;
 
 import java.io.FileNotFoundException;
 import java.net.URLEncoder;
@@ -34,6 +35,7 @@ public class BoardController {
     private final BoardService boardService; // 생성자 주입 방식으로 의존성 주입
     private final CommentService commentService;
     private final BoardFileRepository boardFileRepository;
+    private final View error;
 
     @GetMapping("/save")
     public String saveForm() {
@@ -44,7 +46,7 @@ public class BoardController {
     public String save(@ModelAttribute BoardDTO boardDTO) throws IOException { // DTO 객체를 통해 입력값을 가져옴
         System.out.println("boardDTO = " + boardDTO);
         boardService.save(boardDTO);
-        return "index";
+        return "redirect:/board/paging";
     }
 
     @GetMapping("/")
@@ -90,8 +92,22 @@ public class BoardController {
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, Model model) {
-        boardService.delete(id);
-        return "redirect:/board/";
+        BoardDTO boardDTO = boardService.findById(id);
+        model.addAttribute("board", boardDTO);
+        return "delete";
+    }
+
+    // 실제 삭제 처리
+    @PostMapping("/delete")
+    public String delete(@ModelAttribute BoardDTO boardDTO, Model model) {
+        BoardDTO dbBoard = boardService.findById(boardDTO.getId());
+        if (dbBoard.getBoardPass().equals(boardDTO.getBoardPass())) {
+            boardService.delete(boardDTO.getId());
+            return "redirect:/board/paging";
+        } else {
+            model.addAttribute("board", dbBoard);
+            return "delete";
+        }
     }
 
     @GetMapping("/paging")
@@ -134,5 +150,5 @@ public class BoardController {
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" + encodedFileName + "\"")
                 .body(resource);
-        }
+    }
 }

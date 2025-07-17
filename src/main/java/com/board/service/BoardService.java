@@ -33,8 +33,13 @@ public class BoardService {
     private final BoardFileRepository boardFileRepository;
 
     public void save(BoardDTO boardDTO) throws IOException {
+        List<MultipartFile> fileList = boardDTO.getBoardFile();
+
+        boolean hasRealFile = fileList != null &&
+                fileList.stream().anyMatch(file -> !file.isEmpty());
+
         // 파일 첨부 여부에 따라 로직 분리
-        if (boardDTO.getBoardFile().isEmpty()) {
+        if (!hasRealFile) {
             BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
             boardRepository.save(boardEntity); // DTO -> Entity
         } else {
@@ -44,8 +49,8 @@ public class BoardService {
                 3. 서버 저장용 이름을 만듦(내사진.jpg -> 84593840598_내사진.jpg)
                 4. 저장 경로 설정
                 5. 해당 경로에 파일 저장
-                6. 게시글 정보는 board_table에 데이터 save 처리
-                7. 파일 정보는 board_file_table에 데이터 save 처리
+                6. 게시글 정보는 board에 데이터 save 처리
+                7. 파일 정보는 board_file에 데이터 save 처리
              */
             BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
             Long savedId = boardRepository.save(boardEntity).getId(); // 자식 테이블에서는 부모가 어떤 번호인지에 대한 정보가 필요하기 때문에 부모 게시글에 대한 pk 값이 필요함
@@ -57,7 +62,7 @@ public class BoardService {
                 String savePath = "D:/board_img/" + storedFileName; // D:/board_img/84593840598_내사진.jpg
                 boardFile.transferTo(new File(savePath));
                 BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName); // 부모 엔티티와 파일 정보를 사용해 BoardFileEntity 객체 생성
-                boardFileRepository.save(boardFileEntity); // boardFileEntity 객체를 board_filee에 저장
+                boardFileRepository.save(boardFileEntity); // boardFileEntity 객체를 board_file에 저장
             }
         }
     }

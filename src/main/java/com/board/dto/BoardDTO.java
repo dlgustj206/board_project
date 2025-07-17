@@ -52,9 +52,9 @@ public class BoardDTO {
         boardDTO.setBoardCreatedTime(boardEntity.getCreatedTime());
         boardDTO.setBoardUpdatedTime(boardEntity.getUpdatedTime());
         if (boardEntity.getFileAttached() == 0) {
-            boardDTO.setFileAttached(0);
+            boardDTO.setFileAttached(boardEntity.getFileAttached());
         } else {
-            boardDTO.setFileAttached(1);
+            boardDTO.setFileAttached(boardEntity.getFileAttached());
             List<BoardFileDTO> boardFileDTOList = new ArrayList<>();
             for (BoardFileEntity boardFileEntity : boardEntity.getBoardFileEntityList()) {
                 boardFileDTOList.add(BoardFileDTO.toBoardFileDTO(boardFileEntity));
