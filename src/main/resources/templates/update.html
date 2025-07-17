@@ -211,6 +211,7 @@
     <h2>✏️ 게시글 수정</h2>
     <form action="/board/update" method="post" name="updateForm" enctype="multipart/form-data">
         <input type="hidden" name="id" th:value="${boardUpdate.id}">
+        <input type="hidden" name="deleteFileIds" id="deleteFileIds">
 
         <div class="row">
             <div class="form-group">
@@ -237,9 +238,9 @@
         <div class="form-group">
             <label>📎 첨부파일</label>
             <ul class="file-list">
-                <li th:each="file : ${boardUpdate.fileList}">
+                <li th:each="file : ${boardUpdate.fileList}" th:attr="data-id=${file.id}">
                     <a th:href="@{|/board/file/${file.id}|}" th:text="${file.originalFileName}" target="_blank"></a>
-                    <button type="button" th:onclick="'deleteFile(' + ${file.id} + ')'">삭제</button>
+                    <button type="button" onclick="deleteFile(this)">삭제</button>
                 </li>
             </ul>
         </div>
@@ -276,9 +277,16 @@
         }
     };
 
-    function deleteFile(fileId) {
-        if (confirm('정말 삭제하시겠습니까?')) {
-            location.href = '/board/file/delete/' + fileId;
+    function deleteFile(button) {
+        const li = button.closest("li");
+        const fileId = li.getAttribute("data-id");
+        li.remove(); // 화면에서 제거
+
+        const hiddenInput = document.getElementById("deleteFileIds");
+        if (hiddenInput.value) {
+            hiddenInput.value += "," + fileId;
+        } else {
+            hiddenInput.value = fileId;
         }
     }
 

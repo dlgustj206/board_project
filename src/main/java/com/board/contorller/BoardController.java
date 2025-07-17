@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -83,10 +84,19 @@ public class BoardController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute BoardDTO boardDTO, Model model) {
-        BoardDTO board = boardService.update(boardDTO);
+    public String update(@ModelAttribute BoardDTO boardDTO,
+                         @RequestParam(value = "deleteFileIds", required = false) String deleteFileIds,
+                         Model model) throws IOException {
+
+        List<Long> deleteIds = new ArrayList<>();
+        if (deleteFileIds != null && !deleteFileIds.isEmpty()) {
+            for (String idStr : deleteFileIds.split(",")) {
+                deleteIds.add(Long.parseLong(idStr));
+            }
+        }
+
+        BoardDTO board = boardService.update(boardDTO, deleteIds);
         model.addAttribute("board", board);
-        // return "redirect:/board/" + boardDTO.getId();
         return "detail";
     }
 

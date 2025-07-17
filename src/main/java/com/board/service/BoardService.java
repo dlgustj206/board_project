@@ -93,8 +93,46 @@ public class BoardService {
         }
     }
 
-    public BoardDTO update(BoardDTO boardDTO) {
-        BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
+    @Transactional
+    public BoardDTO update(BoardDTO boardDTO, List<Long> deleteFileIds) throws IOException {
+        Optional<BoardEntity> optionalBoard = boardRepository.findById(boardDTO.getId());
+        if (optionalBoard.isEmpty()) {
+            throw new IllegalArgumentException("해당 게시글이 존재하지 않습니다.");
+        }
+
+        BoardEntity boardEntity = optionalBoard.get();
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardHits(boardDTO.getBoardHits());
+        boardEntity.setBoardPass(boardDTO.getBoardPass());
+
+        // 삭제 요청된 파일들 제거
+        if (deleteFileIds != null && !deleteFileIds.isEmpty()) {
+            for (Long fileId : deleteFileIds) {
+                boardFileRepository.deleteById(fileId);
+            }
+        }
+
+        // 새 파일 저장
+        List<MultipartFile> newFiles = boardDTO.getBoardFile();
+        boolean hasNewFiles = newFiles != null && newFiles.stream().anyMatch(file -> !file.isEmpty());
+
+        if (hasNewFiles) {
+            for (MultipartFile file : newFiles) {
+                String originalFilename = file.getOriginalFilename();
+                String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
+                String savePath = "D:/board_img/" + storedFileName;
+                file.transferTo(new File(savePath));
+                BoardFileEntity fileEntity = BoardFileEntity.toBoardFileEntity(boardEntity, originalFilename, storedFileName);
+                boardFileRepository.save(fileEntity);
+            }
+        }
+
+        // 파일 존재 여부 다시 체크해서 설정
+        int remainingFileCount = boardFileRepository.findAll().stream()
+                .filter(f -> f.getBoardEntity().getId().equals(boardEntity.getId())).toList().size();
+        boardEntity.setFileAttached(remainingFileCount > 0 ? 1 : 0);
+
         boardRepository.save(boardEntity);
         return findById(boardDTO.getId());
     }
