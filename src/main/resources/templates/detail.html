@@ -215,8 +215,6 @@
 <body>
 <div class="container">
     <h2>📄 게시글 상세보기</h2>
-
-    <!-- 2x2 게시글 정보 -->
     <div class="info-row">
         <table class="info-block">
             <tr>
@@ -311,7 +309,15 @@
                     output += "<td>" + res[i].id + "</td>";
                     output += "<td>" + res[i].commentWriter + "</td>";
                     output += "<td>" + res[i].commentContents + "</td>";
-                    output += "<td>" + res[i].commentCreatedTime + "</td>";
+                    // 포맷 적용된 작성일 표시
+                    const formattedTime = new Date(res[i].commentCreatedTime).toLocaleString('ko-KR', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    output += "<td>" + formattedTime + "</td>";
                     output += "</tr>";
                 }
                 document.getElementById('comment-list').innerHTML = output;
